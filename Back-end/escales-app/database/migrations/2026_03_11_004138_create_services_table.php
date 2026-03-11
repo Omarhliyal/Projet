@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('escales', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');   // Must match your form
-        $table->string('port');   // Must match your form
-        $table->date('date');     // Must match your form
-        $table->timestamps();
-        });
+        Schema::create('services', function (Blueprint $table) {
+
+    $table->id();
+    $table->string('nom');
+    $table->text('description')->nullable();
+
+    $table->timestamps();
+
+});
+
     }
 
     /**
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('escales');
+        Schema::dropIfExists('services');
     }
 };

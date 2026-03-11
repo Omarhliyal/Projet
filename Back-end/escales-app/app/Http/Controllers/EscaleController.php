@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Escale;
+use App\Models\Pilote;
+use App\Models\Machine;
+use App\Models\Quai;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class EscaleController extends Controller
@@ -12,7 +16,7 @@ class EscaleController extends Controller
      */
     public function index()
     {
-        $escales = Escale::all();
+        $escales = Escale::with(['pilote','machine','quai','service'])->get();
         return view('escales.index', compact('escales'));
     }
 
@@ -21,7 +25,12 @@ class EscaleController extends Controller
      */
     public function create()
     {
-        return view('escales.create');
+        $pilotes = Pilote::all();
+        $machines = Machine::all();
+        $quais = Quai::all();
+        $services = Service::all();
+
+        return view('escales.create', compact('pilotes','machines','quais','services'));
     }
 
     /**
@@ -32,32 +41,28 @@ class EscaleController extends Controller
         $request->validate([
             'ship_name' => 'required',
             'cargo' => 'required',
-            'port' => 'required',
-            'pilot_name' => 'required',
-            'tugboats' => 'required',
-            'machine_operator' => 'required',
-            'equipment_used' => 'required',
-            'services' => 'required',
             'arrival_date' => 'required|date',
             'departure_date' => 'required|date',
             'status' => 'required',
+            'pilote_id' => 'required',
+            'machine_id' => 'required',
+            'quai_id' => 'required',
+            'service_id' => 'required',
         ]);
 
         Escale::create([
             'ship_name' => $request->ship_name,
             'cargo' => $request->cargo,
-            'port' => $request->port,
-            'pilot_name' => $request->pilot_name,
-            'tugboats' => $request->tugboats,
-            'machine_operator' => $request->machine_operator,
-            'equipment_used' => $request->equipment_used,
-            'services' => $request->services,
             'arrival_date' => $request->arrival_date,
             'departure_date' => $request->departure_date,
             'status' => $request->status,
+            'pilote_id' => $request->pilote_id,
+            'machine_id' => $request->machine_id,
+            'quai_id' => $request->quai_id,
+            'service_id' => $request->service_id,
         ]);
 
-        return redirect('/escales')->with('success', 'Escale added successfully');
+        return redirect('/escales')->with('success', 'Escale ajoutée avec succès');
     }
 
     /**
@@ -73,7 +78,12 @@ class EscaleController extends Controller
      */
     public function edit(Escale $escale)
     {
-        return view('escales.edit', compact('escale'));
+        $pilotes = Pilote::all();
+        $machines = Machine::all();
+        $quais = Quai::all();
+        $services = Service::all();
+
+        return view('escales.edit', compact('escale','pilotes','machines','quais','services'));
     }
 
     /**
@@ -84,14 +94,14 @@ class EscaleController extends Controller
         $request->validate([
             'ship_name' => 'required',
             'cargo' => 'required',
-            'port' => 'required',
             'arrival_date' => 'required|date',
             'departure_date' => 'required|date',
+            'status' => 'required',
         ]);
 
         $escale->update($request->all());
 
-        return redirect('/escales')->with('success', 'Escale updated successfully');
+        return redirect('/escales')->with('success', 'Escale modifiée avec succès');
     }
 
     /**
@@ -101,6 +111,6 @@ class EscaleController extends Controller
     {
         $escale->delete();
 
-        return redirect('/escales')->with('success', 'Escale deleted successfully');
+        return redirect('/escales')->with('success', 'Escale supprimée avec succès');
     }
 }
