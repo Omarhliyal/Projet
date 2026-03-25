@@ -8,5 +8,6 @@ Route::get('/', function () {
 use App\Http\Controllers\EscaleController;
 
 Route::get('/escales', [EscaleController::class, 'index']);
+Route::resource('escales', EscaleController::class);
 Route::get('/escales/create', [EscaleController::class, 'create'])->name('escales.create');
 Route::post('/escales', [EscaleController::class, 'store'])->name('escales.store');

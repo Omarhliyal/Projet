@@ -4,38 +4,44 @@ namespace App\Http\Controllers;
 
 use App\Models\Escale;
 use App\Models\Pilote;
-use App\Models\Machine;
+use App\Models\Vedette;
+use App\Models\EquipeVedette;
+use App\Models\Remorque;
+use App\Models\EquipeRemorque;
 use App\Models\Quai;
-use App\Models\Service;
+use App\Models\Prestation;
 use Illuminate\Http\Request;
 
 class EscaleController extends Controller
 {
-    /**
-     * Display a listing of escales
-     */
     public function index()
     {
-        $escales = Escale::with(['pilote','machine','quai','service'])->get();
+        $escales = Escale::with([
+            'pilote',
+            'vedette',
+            'equipeVedette',
+            'remorque',
+            'equipeRemorque',
+            'quai',
+            'prestation'
+        ])->get();
+
         return view('escales.index', compact('escales'));
     }
 
-    /**
-     * Show the form to create a new escale
-     */
     public function create()
     {
-        $pilotes = Pilote::all();
-        $machines = Machine::all();
-        $quais = Quai::all();
-        $services = Service::all();
-
-        return view('escales.create', compact('pilotes','machines','quais','services'));
+        return view('escales.create', [
+            'pilotes' => Pilote::all(),
+            'vedettes' => Vedette::all(),
+            'equipesVedette' => EquipeVedette::all(),
+            'remorques' => Remorque::all(),
+            'equipesRemorque' => EquipeRemorque::all(),
+            'quais' => Quai::all(),
+            'prestations' => Prestation::all(),
+        ]);
     }
 
-    /**
-     * Store a new escale in database
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -45,68 +51,44 @@ class EscaleController extends Controller
             'departure_date' => 'required|date',
             'status' => 'required',
             'pilote_id' => 'required',
-            'machine_id' => 'required',
+            'vedette_id' => 'required',
+            'equipe_vedette_id' => 'required',
+            'remorque_id' => 'required',
+            'equipe_remorque_id' => 'required',
             'quai_id' => 'required',
-            'service_id' => 'required',
+            'prestation_id' => 'required',
         ]);
 
-        Escale::create([
-            'ship_name' => $request->ship_name,
-            'cargo' => $request->cargo,
-            'arrival_date' => $request->arrival_date,
-            'departure_date' => $request->departure_date,
-            'status' => $request->status,
-            'pilote_id' => $request->pilote_id,
-            'machine_id' => $request->machine_id,
-            'quai_id' => $request->quai_id,
-            'service_id' => $request->service_id,
-        ]);
+        Escale::create($request->all());
 
         return redirect('/escales')->with('success', 'Escale ajoutée avec succès');
     }
 
-    /**
-     * Display a specific escale
-     */
-    public function show(Escale $escale)
-    {
-        return view('escales.show', compact('escale'));
-    }
-
-    /**
-     * Show the form for editing
-     */
     public function edit(Escale $escale)
     {
-        $pilotes = Pilote::all();
-        $machines = Machine::all();
-        $quais = Quai::all();
-        $services = Service::all();
-
-        return view('escales.edit', compact('escale','pilotes','machines','quais','services'));
+        return view('escales.edit', compact('escale'));
     }
 
-    /**
-     * Update an escale
-     */
     public function update(Request $request, Escale $escale)
     {
-        $request->validate([
-            'ship_name' => 'required',
-            'cargo' => 'required',
-            'arrival_date' => 'required|date',
-            'departure_date' => 'required|date',
-            'status' => 'required',
-        ]);
-
-        $escale->update($request->all());
+        $escale->update($request->only([
+            'ship_name',
+            'cargo',
+            'arrival_date',
+            'departure_date',
+            'status',
+            'pilote_id',
+            'vedette_id',
+            'equipe_vedette_id',
+            'remorque_id',
+            'equipe_remorque_id',
+            'quai_id',
+            'prestation_id'
+        ]));
 
         return redirect('/escales')->with('success', 'Escale modifiée avec succès');
     }
 
-    /**
-     * Delete an escale
-     */
     public function destroy(Escale $escale)
     {
         $escale->delete();

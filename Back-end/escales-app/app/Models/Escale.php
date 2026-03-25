@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Escale extends Model
 {
-
     protected $fillable = [
         'ship_name',
         'cargo',
@@ -14,29 +13,39 @@ class Escale extends Model
         'departure_date',
         'status',
         'pilote_id',
-        'machine_id',
+        'vedette_id',
+        'equipe_vedette_id',
+        'remorque_id',
+        'equipe_remorque_id',
         'quai_id',
-        'service_id'
+        'prestation_id',
     ];
 
-    public function pilote()
-    {
-        return $this->belongsTo(Pilote::class);
+    public function pilote() {
+        return $this->belongsTo(Pilote::class, 'pilote_id');
     }
 
-    public function machine()
-    {
-        return $this->belongsTo(Machine::class);
+    public function vedette() {
+        return $this->belongsTo(Vedette::class, 'vedette_id');
     }
 
-    public function quai()
-    {
-        return $this->belongsTo(Quai::class);
+    public function equipeVedette() {
+        return $this->belongsTo(EquipeVedette::class, 'equipe_vedette_id');
     }
 
-    public function service()
-    {
-        return $this->belongsTo(Service::class);
+    public function remorque() {
+        return $this->belongsTo(Remorque::class, 'remorque_id');
     }
 
+    public function equipeRemorque() {
+        return $this->belongsTo(EquipeRemorque::class, 'equipe_remorque_id');
+    }
+
+    public function quai() {
+        return $this->belongsTo(Quai::class, 'quai_id');
+    }
+
+    public function prestation() {
+        return $this->belongsTo(Prestation::class, 'prestation_id');
+    }
 }
