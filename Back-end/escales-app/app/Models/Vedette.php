@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vedette extends Model
 {
-    //
+    protected $fillable = ['nom'];
+
 }
